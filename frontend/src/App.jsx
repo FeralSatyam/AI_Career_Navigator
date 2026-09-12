@@ -1,15 +1,17 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
 import LandingPage from './pages/LandingPage'
+import Navbar from './components/Navbar'
+import { BrowserRouter } from 'react-router-dom'
 
 function App() {
   return (
-    <>
-      <LandingPage></LandingPage>
-    </>
+    <div className='w-full h-full bg-[#F5EAD8]'>
+        <BrowserRouter>
+          <Navbar></Navbar>
+        </BrowserRouter>
+        <LandingPage></LandingPage>
+    </div>
+
   )
 }
 
