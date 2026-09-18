@@ -9,8 +9,8 @@ const LandingPage = () => {
         <div className='flex w-full '>
           {/* left page */}
           <div className='pt-20 w-1/2'>
-            <div className='bg-[#F0FAE1] rounded-4xl w-40 h-9 flex items-center justify-center'>
-                <p className=''>Built for students</p>
+            <div className='bg-[#F0FAE1] rounded-4xl w-75 h-10 flex items-center justify-center'>
+                <p className=''>Built for students and professionals</p>
             </div>
             
             <h1 className='text-6xl font-[500] pt-5'>Your resume, <br />
