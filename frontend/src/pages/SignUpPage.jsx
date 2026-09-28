@@ -1,5 +1,6 @@
-import React from 'react'
-import { useState } from 'react'
+import React from 'react';
+import { register } from '../services/authService.js';
+import { useState } from 'react';
 
 
 const Stepone = ({formData, handleChange}) => {
@@ -55,11 +56,14 @@ const Steptwo = ({formData, handleChange}) => {
             <p>Year of Study</p>
           </div>
           <div>
-            <button className='border h-8 w-20 rounded-l-[25px] border-[#CABEAB]' type='button' data-value="first">First</button>
-            <button className='border h-8 w-21 border-[#CABEAB]' type='button' data-value="second">Second</button>
-            <button className='border h-8 w-18 border-[#CABEAB]' type='button' data-value="third">Third</button>
-            <button className='border h-8 w-18 border-[#CABEAB]' type='button' data-value="final">Final</button>
-            <button className='border h-8 w-24 rounded-r-[25px] border-[#CABEAB]' type='button' data-value="graduate">Graduate</button>
+            <button onClick={() => setIsSelected(!isSelected)} className={(`border h-8 w-20 rounded-l-[25px] border-[#CABEAB] ${
+              isSelected ? 'bg-green-500 text-white hover:bg-green-600'
+              : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+            }`)} type='button' data-value="first">First</button>
+            <button  onClick={() => setIsSelected(!isSelected)} className={(`border h-8 w-21 border-[#CABEAB]`)} type='button' data-value="second">Second</button>
+            <button  onClick={() => setIsSelected(!isSelected)} className={(`border h-8 w-18 border-[#CABEAB]`)} type='button' data-value="third">Third</button>
+            <button  onClick={() => setIsSelected(!isSelected)} className={(`border h-8 w-18 border-[#CABEAB]`)} type='button' data-value="final">Final</button>
+            <button  onClick={() => setIsSelected(!isSelected)} className={(`border h-8 w-24 rounded-r-[25px] border-[#CABEAB]`)} type='button' data-value="graduate">Graduate</button>
 
           </div>
         </div>
@@ -144,8 +148,13 @@ const SignUpPage = () => {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({
     email: '',
+    full_name: '',
     password: '',
-    // Add later 
+    university: '',
+    year_of_study: '',
+    hour_of_study: '',
+    days_of_study: '',
+    role: ''
   });
 
   const handleChange = (e) => {
@@ -169,15 +178,27 @@ const SignUpPage = () => {
   const handleNext = () => setStep((prev) => prev + 1);
   const handleBack = () => setStep((prev) => prev - 1);
 
-  const handleSubmit = (e) => {
+  const [isSelected, setIsSelected] = useState(false);
+  const handleSelect = () => {
+    setIsSelected(!isSelected);
+  }
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Form Submited", formData);
+    
+    try {
+      const data = await register(email, full_name, password, university, year_of_study, hour_of_study, days_of_study, role);
+      console.log("Registration success", data);
+    } catch (error){
+      console.error(error);
+    }
     
   }
 
   const changeOption = () => {
     <button></button>
   }
+  
 
   return (
     <div className='h-full pl-35 flex font-scoutie '>
@@ -237,12 +258,6 @@ const SignUpPage = () => {
                 <button className='text-[#C67139] h-12 mt-5 w-30 rounded-[30px] font-[600] text-[20px]' type='button' onClick={handleBack}>Back</button>
               )}
 
-
-              {/* {step < 2 ? (
-                <button className='bg-red-500 h-30 w-50' type='button' onClick={handleNext}>Next</button>
-              ) : (
-                <button className='bg-green-500 h-30 w-50' type='button' onClick={handleSubmit}>Submit</button>
-              )} */}
             </div>
           </form>
           </div>
