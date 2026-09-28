@@ -131,10 +131,6 @@ const Stepthree = ({formData, handleChange}) => {
                   <p className='text-[12px] text-[#5D584F]'>Product, APIs, front end</p>
                 </button>
             </div>
-            
-          
-
-
           </div>
         </div>
       </form>
@@ -218,15 +214,13 @@ const SignUpPage = () => {
       <div className='pt-10'>
         <div className='h-125 w-150 bg-[#EBDDC5] rounded rounded-[25px]'>
           <div className='pt-5 pl-5'>
-              <form onSubmit={handleSubmit}>
+            
             <div>
               {renderStep()}
             </div>
             
-
+            <form onSubmit={handleSubmit}>
             <div className='flex'>
-              
-
               {step == 0 && (
                 <button className='bg-[#C67139] h-12 mt-5 w-150 mr-8 rounded-[30px] text-white font-[500] text-[18px]' type='button' onClick={handleNext}>Create Account</button>
               )}
