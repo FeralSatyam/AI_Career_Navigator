@@ -27,7 +27,12 @@ const Stepone = ({formData, handleChange}) => {
 }
 
 
-const Steptwo = ({formData, handleChange}) => {
+const Steptwo = ({formData, handleChange, handleOptionSelect, handleDayToggle}) => {
+  const selectedDays = formData.days_of_study.split(',').filter(Boolean);
+  const choiceClass = (selected) => `border h-8 border-[#CABEAB] ${
+    selected ? 'bg-[#C67139] text-white' : 'bg-transparent text-[#201E1D] hover:bg-[#F4EBDD]'
+  }`;
+
   return(
     <div>
       <div className='flex gap-2 items-center'>
@@ -56,15 +61,23 @@ const Steptwo = ({formData, handleChange}) => {
             <p>Year of Study</p>
           </div>
           <div>
-            <button onClick={() => setIsSelected(!isSelected)} className={(`border h-8 w-20 rounded-l-[25px] border-[#CABEAB] ${
-              isSelected ? 'bg-green-500 text-white hover:bg-green-600'
-              : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-            }`)} type='button' data-value="first">First</button>
-            <button  onClick={() => setIsSelected(!isSelected)} className={(`border h-8 w-21 border-[#CABEAB]`)} type='button' data-value="second">Second</button>
-            <button  onClick={() => setIsSelected(!isSelected)} className={(`border h-8 w-18 border-[#CABEAB]`)} type='button' data-value="third">Third</button>
-            <button  onClick={() => setIsSelected(!isSelected)} className={(`border h-8 w-18 border-[#CABEAB]`)} type='button' data-value="final">Final</button>
-            <button  onClick={() => setIsSelected(!isSelected)} className={(`border h-8 w-24 rounded-r-[25px] border-[#CABEAB]`)} type='button' data-value="graduate">Graduate</button>
-
+            {[
+              ['first', 'First', 'w-20 rounded-l-[25px]'],
+              ['second', 'Second', 'w-21'],
+              ['third', 'Third', 'w-18'],
+              ['final', 'Final', 'w-18'],
+              ['graduate', 'Graduate', 'w-24 rounded-r-[25px]'],
+            ].map(([value, label, widthClass]) => (
+              <button
+                key={value}
+                onClick={() => handleOptionSelect('year_of_study', value)}
+                className={`${choiceClass(formData.year_of_study === value)} ${widthClass}`}
+                type='button'
+                aria-pressed={formData.year_of_study === value}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -74,10 +87,22 @@ const Steptwo = ({formData, handleChange}) => {
             <p>Hours you can give this each week</p>
           </div>
           <div>
-            <button className='border h-8 w-14 rounded-l-[25px] border-[#CABEAB]' type='button' data-value="first">4</button>
-            <button className='border h-8 w-12 border-[#CABEAB]' type='button' data-value="second">8</button>
-            <button className='border h-8 w-12 border-[#CABEAB]' type='button' data-value="third">12</button>
-            <button className='border h-8 w-14 border-[#CABEAB] rounded-r-[25px]' type='button' data-value="final">16+</button>
+            {[
+              ['4', '4', 'w-14 rounded-l-[25px]'],
+              ['8', '8', 'w-12'],
+              ['12', '12', 'w-12'],
+              ['16', '16+', 'w-14 rounded-r-[25px]'],
+            ].map(([value, label, widthClass]) => (
+              <button
+                key={value}
+                onClick={() => handleOptionSelect('hour_of_study', value)}
+                className={`${choiceClass(String(formData.hour_of_study) === value)} ${widthClass}`}
+                type='button'
+                aria-pressed={String(formData.hour_of_study) === value}
+              >
+                {label || value}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -87,14 +112,17 @@ const Steptwo = ({formData, handleChange}) => {
             <p>Which days do you usually</p>
           </div>
           <div className='flex gap-2'>
-            <button className='border h-8 w-18 border-[#CABEAB] rounded-[25px]' type='button' data-value="first">Sun</button>
-            <button className='border h-8 w-18 border-[#CABEAB] rounded-[25px]' type='button' data-value="second">Mon</button>
-            <button className='border h-8 w-18 border-[#CABEAB] rounded-[25px]' type='button' data-value="third">Tue</button>
-            <button className='border h-8 w-18 border-[#CABEAB] rounded-[25px]' type='button' data-value="final">Wed</button>
-            <button className='border h-8 w-18 border-[#CABEAB] rounded-[25px]' type='button' data-value="graduate">Thu</button>
-            <button className='border h-8 w-18 border-[#CABEAB] rounded-[25px]' type='button' data-value="final">Fri</button>
-            <button className='border h-8 w-18 border-[#CABEAB] rounded-[25px]' type='button' data-value="final">Sat</button>
-
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+              <button
+                key={day}
+                onClick={() => handleDayToggle(day)}
+                className={`${choiceClass(selectedDays.includes(day))} w-18 rounded-[25px]`}
+                type='button'
+                aria-pressed={selectedDays.includes(day)}
+              >
+                {day}
+              </button>
+            ))}
           </div>
         </div>
       </form>
@@ -162,12 +190,27 @@ const SignUpPage = () => {
     setFormData((prev) => ({...prev, [name]: value}))
   };
 
+  const handleOptionSelect = (name, value) => {
+    setFormData((prev) => ({...prev, [name]: value}));
+  };
+
+  const handleDayToggle = (day) => {
+    setFormData((prev) => {
+      const selectedDays = prev.days_of_study.split(',').filter(Boolean);
+      const nextDays = selectedDays.includes(day)
+        ? selectedDays.filter((selectedDay) => selectedDay !== day)
+        : [...selectedDays, day];
+
+      return {...prev, days_of_study: nextDays.join(',')};
+    });
+  };
+
   const renderStep = () => {
     switch(step) {
       case 0:
         return <Stepone formData={formData} handleChange={handleChange} />
       case 1:
-        return <Steptwo formData={formData} handleChange={handleChange} />
+        return <Steptwo formData={formData} handleChange={handleChange} handleOptionSelect={handleOptionSelect} handleDayToggle={handleDayToggle} />
       case 2:
         return <Stepthree formData={formData} handleChange={handleChange} />
       default:
@@ -177,11 +220,6 @@ const SignUpPage = () => {
 
   const handleNext = () => setStep((prev) => prev + 1);
   const handleBack = () => setStep((prev) => prev - 1);
-
-  const [isSelected, setIsSelected] = useState(false);
-  const handleSelect = () => {
-    setIsSelected(!isSelected);
-  }
 
   const handleSubmit = async(e) => {
     e.preventDefault();
