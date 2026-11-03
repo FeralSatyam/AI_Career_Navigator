@@ -1,6 +1,7 @@
 import React from 'react';
 import { register } from '../services/authService.js';
 import { useState } from 'react';
+import { UNSAFE_createHashHistory } from 'react-router-dom';
 
 
 const Stepone = ({formData, handleChange}) => {
@@ -128,11 +129,14 @@ const Steptwo = ({formData, handleChange, handleOptionSelect, handleDayToggle}) 
       </form>
       
     </div>
-  )
+ )
   
 }
 
-const Stepthree = ({formData, handleChange}) => {
+const Stepthree = ({formData, handleChange, handleOptionSelect}) => {
+  const choiceClass = (selected) => `border h-8 border-[#CABEAB] ${
+    selected ? 'bg-[#C67139] text-white' : 'bg-transparent text-[#201E1D] hover:bg-[#F4EBDD]'
+  }`;
   return(
       <div>
       <div className='flex gap-2 items-center'>
@@ -148,21 +152,22 @@ const Stepthree = ({formData, handleChange}) => {
       <form action="">
         <div className='pt-5'>
           <div className='flex flex-col gap-2'>
-            <div className=''>
-                <button className='border h-18 w-130 border-[#CABEAB] rounded-[25px] font-[500] text-[20px] flex flex-col text-left pl-4 justify-center' type='button' data-value="first">AI / ML
-                <p className='text-[12px] text-[#5D584F]'>Modelling, data, deployment</p>
-                </button>
-            </div>
-            <div>
-                <button className='border h-18 w-130 border-[#CABEAB] rounded-[25px] font-[500] text-[20px] flex flex-col text-left pl-4 justify-center' type='button' data-value="second">DevOps
-                  <p className='text-[12px] text-[#5D584F]'>Cloud, containers, automation</p>
-                </button>
-            </div>
-            <div>
-                <button className='border h-18 w-130 border-[#CABEAB] rounded-[25px] font-[500] text-[20px] flex flex-col text-left pl-4 justify-center' type='button' data-value="third">Software Dev
-                  <p className='text-[12px] text-[#5D584F]'>Product, APIs, front end</p>
-                </button>
-            </div>
+            {[
+              ['AI/ML', 'AI/ML', 'border h-18 w-130 border-[#CABEAB] rounded-[25px] font-[500] text-[20px] flex flex-col text-left pl-4 justify-center'],
+              ['Software Development', 'Software Development', 'w-14 rounded-l-[25px]'],
+              ['Cloud Engineer', 'Cloud Engineer', 'w-14 rounded-l-[25px]']
+             
+            ].map(([value, lable, widthClass]) => (
+              <button
+                key={value}
+                onClick={() => handleOptionSelect('role', value)}
+                className={`${choiceClass(String(formData.role) === value)} ${widthClass}`}
+                type='button'
+                aria-pressed={String(formData.role) === value}
+              >
+              {lable || value}
+              </button>
+            ))}
           </div>
         </div>
       </form>
@@ -204,6 +209,10 @@ const SignUpPage = () => {
       return {...prev, days_of_study: nextDays.join(',')};
     });
   };
+
+  const handleRoleToggle = (role) => {
+    //
+  }
 
   const renderStep = () => {
     switch(step) {
