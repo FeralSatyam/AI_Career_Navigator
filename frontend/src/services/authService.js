@@ -11,8 +11,8 @@ export const register = async(email, full_name, password, university, year_of_st
         if (response){
             localStorage.setItem('userToken', response.data.token);
         }
-        console.log(response.data.message)
-        return response.data;
+        // console.log(response.data.message)
+        return response;
     } catch (error){
         console.error(error)
     }
@@ -27,8 +27,8 @@ export const login = async(email, password) => {
         if (response) {
             localStorage.setItem('userToken', response.data.token);
         }
-        console.log(response.data.message)
-        return response.data;
+        //console.log(response.data)
+        return response;
     }
     catch(error){
         console.error(error)

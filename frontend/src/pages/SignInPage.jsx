@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { login } from '../services/authService.js'
 
 const SignInPage = () => {
 
+
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -18,7 +20,12 @@ const SignInPage = () => {
         e.preventDefault();
 
         try{
-            const data = login(formData.email, formData.password);
+            const response = await login(formData.email, formData.password);
+            console.log("res", response.status)
+        
+            if (response.status == 200) {
+                navigate('/dashboard')
+            }
 
         }
         catch(error){

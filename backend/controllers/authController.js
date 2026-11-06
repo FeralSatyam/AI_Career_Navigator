@@ -32,7 +32,8 @@ export const register = async(req, res) => {
                 _id: user._id,
                 email: user.email,
                 token: generateToken(user._id),
-                message: 'User created'})
+                message: 'User created',
+                role: 'user'})
         }
 
     } catch (error) {
@@ -51,7 +52,8 @@ export const login = async(req, res) => {
                 full_name: user.full_name,
                 email: user.email,
                 token: generateToken(user._id),
-                message: 'User logged in'});
+                message: 'User logged in',
+                role: 'user'});
         }
 
         else {

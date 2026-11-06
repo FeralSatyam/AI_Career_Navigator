@@ -1,7 +1,7 @@
 import React from 'react';
 import { register } from '../services/authService.js';
 import { useState, useRef } from 'react';
-import { Link, Navigate, UNSAFE_createHashHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const Stepone = ({formData, handleChange, error}) => {
@@ -179,6 +179,7 @@ const Stepthree = ({formData, handleChange, handleOptionSelect}) => {
 
 const SignUpPage = () => {
   const fileInputRef = useRef(null);
+  const navigate = useNavigate()
   const [selectedFile, setSelectedFile] = useState(null);
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
@@ -216,10 +217,6 @@ const SignUpPage = () => {
     });
   };
 
-  const handleRoleToggle = (role) => {
-    //
-  }
-
   const renderStep = () => {
     switch(step) {
       case 0:
@@ -252,9 +249,11 @@ const SignUpPage = () => {
     e.preventDefault();
     
     try {
-      console.log(formData.email)
-      const data = await register(formData.email, formData.full_name, formData.password, formData.university, formData.year_of_study, formData.hour_of_study, formData.days_of_study, formData.role);
-      console.log("Registration success", data);
+      const response = await register(formData.email, formData.full_name, formData.password, formData.university, formData.year_of_study, formData.hour_of_study, formData.days_of_study, formData.role);
+      
+      if (response.status == 200) {
+        navigate('/signin')
+      }
     } catch (error){
       console.error(error);
     }
