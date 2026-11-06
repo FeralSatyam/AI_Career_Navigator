@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const backend_api = import.meta.env.BACKEND_URL;
+const backend_api = import.meta.env.VITE_BACKEND_URL;
 
-export const register = async(req, res) => {
+export const register = async(email, full_name, password, university, year_of_study, hour_of_study, days_of_study, role) => {
     try{
         const response = await axios.post(`${backend_api}/users/register`, {
             email, full_name, password, university, year_of_study, hour_of_study, days_of_study, role

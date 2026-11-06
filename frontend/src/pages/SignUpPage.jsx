@@ -1,10 +1,10 @@
 import React from 'react';
 import { register } from '../services/authService.js';
-import { useState } from 'react';
-import { UNSAFE_createHashHistory } from 'react-router-dom';
+import { useState, useRef } from 'react';
+import { Link, Navigate, UNSAFE_createHashHistory } from 'react-router-dom';
 
 
-const Stepone = ({formData, handleChange}) => {
+const Stepone = ({formData, handleChange, error}) => {
   return(
     <div className=''>
       <div className='flex gap-2 items-center'>
@@ -17,9 +17,10 @@ const Stepone = ({formData, handleChange}) => {
       <form action="">
         <div className='pt-3 text-[16px] flex flex-col mr-8 '>
           <label className='text-[15px] text-[#5D584F] pb-2' htmlFor="email">Email</label>
-          <input className='border pl-3 h-9 rounded-[20px] border-[#CABEAB]' type="email" id='email' name='email' placeholder='abcd@gmail.com' value={formData.email} onChange={handleChange} />
+          <input className='boder pl-3 h-9 rounded-[20px] border-[#CABEAB]' type="email" id='email' name='email' placeholder='abcd@gmail.com' value={formData.email} onChange={handleChange} />
           <label className='text-[15px] text-[#5D584F] pt-3 pb-2' htmlFor="password">Password</label>
           <input className='border pl-3 h-9 rounded-[20px] border-[#CABEAB]' type="password" id='password' name="password" placeholder='Password' value={formData.password} onChange={handleChange} />
+          {error}
         </div>
       </form>
     </div>
@@ -154,8 +155,8 @@ const Stepthree = ({formData, handleChange, handleOptionSelect}) => {
           <div className='flex flex-col gap-2'>
             {[
               ['AI/ML', 'AI/ML', 'border h-18 w-130 border-[#CABEAB] rounded-[25px] font-[500] text-[20px] flex flex-col text-left pl-4 justify-center'],
-              ['Software Development', 'Software Development', 'w-14 rounded-l-[25px]'],
-              ['Cloud Engineer', 'Cloud Engineer', 'w-14 rounded-l-[25px]']
+              ['Software Development', 'Software Development', 'border h-18 w-130 border-[#CABEAB] rounded-[25px] font-[500] text-[20px] flex flex-col text-left pl-4 justify-center'],
+              ['Cloud Engineer', 'Cloud Engineer', 'border h-18 w-130 border-[#CABEAB] rounded-[25px] font-[500] text-[20px] flex flex-col text-left pl-4 justify-center']
              
             ].map(([value, lable, widthClass]) => (
               <button
@@ -177,8 +178,10 @@ const Stepthree = ({formData, handleChange, handleOptionSelect}) => {
 }
 
 const SignUpPage = () => {
-
+  const fileInputRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [step, setStep] = useState(0);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: '',
     full_name: '',
@@ -192,7 +195,10 @@ const SignUpPage = () => {
 
   const handleChange = (e) => {
     const {name, value} = e.target;
-    setFormData((prev) => ({...prev, [name]: value}))
+    setFormData((prev) => ({...prev, [name]: value}));
+    if(errors[name]){
+      setErrors({...errors, [name]: ''})
+    }
   };
 
   const handleOptionSelect = (name, value) => {
@@ -221,20 +227,33 @@ const SignUpPage = () => {
       case 1:
         return <Steptwo formData={formData} handleChange={handleChange} handleOptionSelect={handleOptionSelect} handleDayToggle={handleDayToggle} />
       case 2:
-        return <Stepthree formData={formData} handleChange={handleChange} />
+        return <Stepthree formData={formData} handleChange={handleChange} handleOptionSelect={handleOptionSelect} />
       default:
         return null;
     }
   };
 
-  const handleNext = () => setStep((prev) => prev + 1);
+  const handleNext = () => {
+    
+    let newErrors = {};
+    if(step == 1) {
+      if (!formData.email.trim()) newErrors.email = 'Email is required!';
+      if (!formData.password.trim()) newErrors.password = 'Password is required!'
+    } 
+    setStep((prev) => prev + 1);
+  }
   const handleBack = () => setStep((prev) => prev - 1);
+  const handleCreateAccount = () => {
+      console.log("Hi");
+      
+    }
 
   const handleSubmit = async(e) => {
     e.preventDefault();
     
     try {
-      const data = await register(email, full_name, password, university, year_of_study, hour_of_study, days_of_study, role);
+      console.log(formData.email)
+      const data = await register(formData.email, formData.full_name, formData.password, formData.university, formData.year_of_study, formData.hour_of_study, formData.days_of_study, formData.role);
       console.log("Registration success", data);
     } catch (error){
       console.error(error);
@@ -244,6 +263,24 @@ const SignUpPage = () => {
 
   const changeOption = () => {
     <button></button>
+  }
+
+  const customUploadButton = () => {
+    
+
+    const handleButtonClick = () => {
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
+    };
+
+    const handleFileChange = (event) => {
+      if (event.target.files && event.target.length > 0) {
+        setSelectedFile(event.target.files[0]);
+      }
+    } 
+
+    
   }
   
 
@@ -288,22 +325,63 @@ const SignUpPage = () => {
             </div>
             
             <form onSubmit={handleSubmit}>
-            <div className='flex'>
+              <input type="file" style={{display: 'none'}} accept='.pdf' ref={fileInputRef} onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setSelectedFile(e.target.files[0])
+                }
+              }}/>
+
+
+            <div className='flex gap-4 items-center pt-5'>
               {step == 0 && (
-                <button className='bg-[#C67139] h-12 mt-5 w-150 mr-8 rounded-[30px] text-white font-[500] text-[18px]' type='button' onClick={handleNext}>Create Account</button>
+                
+                <button className='bg-[#C67139] h-12 mt-5 w-150 mr-8 rounded-[30px] text-white font-[500] text-[18px]' type='button' onClick={()=>{
+                  if (!formData.email.trim() || !formData.password.trim()){
+                    setError('Please fill in the details!')
+                    return;
+                  }
+                  else{
+                    handleNext()
+                  }
+                }}>Continue</button>
               )}
 
               {step == 1 && (
                 <button className='bg-[#C67139] h-12 mt-5 w-30 rounded-[30px] text-white font-[500] text-[18px]' type='button' onClick={handleNext}>Continue</button>
               )}
 
+               {step === 2 && (
+                <div className='pt-2 pl-2 text-left'>
+                  {selectedFile?.name ? (
+                    <p className='text-sm text-[#201E1D] text-left'>
+                      Selected: <strong>{selectedFile.name}</strong>
+                    </p>
+                  ) : (
+                    <p className='text-sm text-[#5D584F] text-left'>No file chosen</p>
+                  )}
+                </div>
+              )}
+              
               {step == 2 && (
-                <button className='bg-[#C67139] h-12 mt-5 w-45 rounded-[30px] text-white font-[500] text-[18px]' type='button' onClick={handleNext}>Upload my resume</button>
+                <button className='bg-[#C67139] h-12 mt-5 w-45 rounded-[30px] text-white font-[500] text-[18px]' type='button' onClick={() => {
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                    fileInputRef.current.click();
+                  }
+                }}>Upload resume</button>
+                
               )}
 
-              {step > 0 && (
+
+              {step == 2 && (
+                <button className='text-[#C67139] h-12 mt-5 w-30 rounded-[30px] font-[600] text-[20px]' type='submit' onClick={handleCreateAccount}>Continue</button>
+              )}
+
+
+              {(step == 1) && (
                 <button className='text-[#C67139] h-12 mt-5 w-30 rounded-[30px] font-[600] text-[20px]' type='button' onClick={handleBack}>Back</button>
               )}
+
 
             </div>
           </form>

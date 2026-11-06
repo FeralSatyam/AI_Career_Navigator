@@ -3,6 +3,7 @@ import LandingPage from './pages/LandingPage'
 import SignUpPage from './pages/SignUpPage'
 import Navbar from './components/Navbar'
 import SignInPage from './pages/SignInPage'
+import DashboardPage from './pages/DashboardPage'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
               <Route path='/' element={<LandingPage />}></Route>
               <Route path='/signup' element={<SignUpPage />}></Route>
               <Route path='/signin' element={<SignInPage />}></Route>
+              <Route path='/dashboard' element={<DashboardPage />}></Route>
             </Routes>
           </main>
 
