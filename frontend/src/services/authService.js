@@ -11,8 +11,26 @@ export const register = async(email, full_name, password, university, year_of_st
         if (response){
             localStorage.setItem('userToken', response.data.token);
         }
+        console.log(response.data.message)
         return response.data;
     } catch (error){
+        console.error(error)
+    }
+}
+
+export const login = async(email, password) => {
+    try{
+        const response = await axios.post(`${backend_api}/users/login`, {
+            email, password
+        });
+
+        if (response) {
+            localStorage.setItem('userToken', response.data.token);
+        }
+        console.log(response.data.message)
+        return response.data;
+    }
+    catch(error){
         console.error(error)
     }
 }

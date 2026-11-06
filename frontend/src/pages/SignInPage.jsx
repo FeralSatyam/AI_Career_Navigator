@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { login } from '../services/authService.js'
 
 const SignInPage = () => {
 
@@ -11,6 +12,18 @@ const SignInPage = () => {
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormData((prev) => ({...prev, [name]: value}));
+    }
+
+    const handleSubmit = async(e) => {
+        e.preventDefault();
+
+        try{
+            const data = login(formData.email, formData.password);
+
+        }
+        catch(error){
+            console.error(error)
+        }
     }
 
   return (
@@ -48,7 +61,7 @@ const SignInPage = () => {
     <div className='h-100 w-130 mt-18 bg-[#EBDDC5] rounded rounded-[25px]'>
         <div className='pt-5 pl-5'>
             <h1 className='text-3xl font-[600] pt-5'>Sign In</h1>
-            <form action="">
+            <form onSubmit={handleSubmit} action="">
                 <div className='pt-3 text-[16px] flex flex-col mr-8 '>
                 <label className='text-[15px] text-[#5D584F] pb-2' htmlFor="email">Email</label>
                 <input className='border pl-3 h-9 rounded-[20px] border-[#CABEAB]' type="email" id='email' name='email' placeholder='abcd@gmail.com' value={formData.email} onChange={handleChange} />
@@ -56,7 +69,7 @@ const SignInPage = () => {
                 <input className='border pl-3 h-9 rounded-[20px] border-[#CABEAB]' type="password" id='password' name="password" placeholder='Password' value={formData.password} onChange={handleChange} />
                 </div>
 
-                <button className='bg-[#C67139] h-12 mt-5 w-120 mr-8 rounded-[30px] text-white font-[500] text-[18px]' type='button'>Sign In</button>
+                <button className='bg-[#C67139] h-12 mt-5 w-120 mr-8 rounded-[30px] text-white font-[500] text-[18px]' type='submit'>Sign In</button>
             </form>
 
             <div className='flex gap-2 mt-4 justify-center'>
