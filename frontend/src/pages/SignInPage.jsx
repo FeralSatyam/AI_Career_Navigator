@@ -21,7 +21,6 @@ const SignInPage = () => {
 
         try{
             const response = await login(formData.email, formData.password);
-            console.log("res", response.status)
         
             if (response.status == 200) {
                 navigate('/dashboard')

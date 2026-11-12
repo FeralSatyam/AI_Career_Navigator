@@ -260,9 +260,6 @@ const SignUpPage = () => {
     
   }
 
-  const changeOption = () => {
-    <button></button>
-  }
 
   const customUploadButton = () => {
     
