@@ -3,8 +3,17 @@ import jwt from 'jsonwebtoken';
 
 
 export const getItems = async(req, res) => {
+    const user_id = req.user.id;
+    const user = await User.findById(user_id);
+    const items = {
+        'full_name': user.full_name,
+        'email': user.email
+    }
 
-    const verifyToken = (req, res, next) => {
+    return res.status(200).json({message: 'Data fetched sucess', data: items});
+}
+
+export const verifyToken = (req, res, next) => {
         const authHeader = req.headers.authorization;
         if(!authHeader || !authHeader.startsWith('Bearer ')){
             return res.status(401).json({message: 'Access denied!'})
@@ -12,21 +21,14 @@ export const getItems = async(req, res) => {
 
         const token = authHeader.split(' ')[1];
         try{
+            console.log("I am in try block item controller")
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             req.user = decoded;
+            console.log("req user", req.user)
+
             next();
+            return req.user;
         } catch(error) {
             return res.status(403).json({message: 'Invalid or expired token'})
         }
     }
-
-
-    
-    const user = await User.findById(req.params._id);
-    const items = [
-        user.full_name,
-        user.email,
-    ]
-
-    return res.status(200).json({message: 'Data fetched sucess', data: items});
-}
