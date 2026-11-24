@@ -26,11 +26,8 @@ export const verifyToken = (req, res, next) => {
 
         const token = authHeader.split(' ')[1];
         try{
-            console.log("I am in try block item controller")
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             req.user = decoded;
-            console.log("req user", req.user)
-
             next();
             return req.user;
         } catch(error) {

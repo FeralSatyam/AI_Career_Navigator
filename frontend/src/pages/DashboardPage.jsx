@@ -15,10 +15,9 @@ const DashboardPage = () => {
       })
       
       if(response && response.data) {
-        setItems(response.data.data)
+        setItems(response.data.data);
       }
-      
-
+    
     }
     fetchItems()
   }, [])
@@ -28,7 +27,7 @@ const DashboardPage = () => {
       <div className='flex items-end justify-between'>
         <div>
           <h1 className='text-[48px] font-[600] leading-tight tracking-[-1.5px]'>
-            Good to see you, {items?.full_name?.split(' ')[0] || 'Ravi'}
+            Good to see you, {items?.full_name}
           </h1>
           <p className='mt-3 text-[17px] text-[#7a6d5d]'>
             Week 3 of 8 · AI / ML Engineer track · 14 day streak
