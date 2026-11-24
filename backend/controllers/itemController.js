@@ -6,8 +6,13 @@ export const getItems = async(req, res) => {
     const user_id = req.user.id;
     const user = await User.findById(user_id);
     const items = {
+        'email': user.email,
         'full_name': user.full_name,
-        'email': user.email
+        'university': user.university,
+        'year_of_study': user.year_of_study,
+        'hour_of_study': user.hour_of_study,
+        'days_of_study': user.days_of_study,
+        'role': user.role
     }
 
     return res.status(200).json({message: 'Data fetched sucess', data: items});
